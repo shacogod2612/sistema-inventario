@@ -1,0 +1,262 @@
+
+.sidebar {
+  width: 260px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 28px 18px 20px;
+  background: var(--color-primary-dark);
+  color: #ffffff;
+}
+
+/* Identidad visual */
+
+.sidebar__brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 8px 30px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.sidebar__logo {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background: var(--color-gold);
+  color: var(--color-primary-dark);
+}
+
+.sidebar__brand-text h2 {
+  margin: 0;
+  font-size: 1.15rem;
+  letter-spacing: 1.5px;
+}
+
+.sidebar__brand-text span {
+  display: block;
+  margin-top: 4px;
+  color: #e8ded1;
+  font-size: 0.61rem;
+  letter-spacing: 0.7px;
+}
+
+/* Navegación */
+
+.sidebar__section {
+  margin-top: 32px;
+}
+
+.sidebar__section-title {
+  display: block;
+  padding: 0 10px;
+  margin-bottom: 14px;
+  color: #d8bfc5;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.sidebar__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sidebar__link {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 12px;
+  border-radius: 9px;
+  color: #ead9d0;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.sidebar__link:hover {
+  background: rgba(255, 255, 255, 0.09);
+  color: #ffffff;
+}
+
+.sidebar__link--active {
+  background: var(--color-primary);
+  color: #ffffff;
+}
+
+/* Parte inferior */
+
+.sidebar__bottom {
+  margin-top: auto;
+}
+
+.sidebar__logout {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 12px;
+  border: none;
+  border-radius: 9px;
+  background: transparent;
+  color: #ead9d0;
+  text-align: left;
+  font-size: 0.9rem;
+  transition: background 0.2s ease;
+}
+
+.sidebar__logout:hover {
+  background: rgba(255, 255, 255, 0.09);
+  color: #ffffff;
+}
+
+.sidebar__logout:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.sidebar__footer {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 20px;
+  padding: 18px 10px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.sidebar__footer span {
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.sidebar__footer small {
+  color: #d8bfc5;
+  font-size: 0.7rem;
+}
+
+
+/* =====================================
+   RESPONSIVE: TABLETS Y MÓVILES
+===================================== */
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    min-height: auto;
+    padding: 12px 16px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .sidebar__brand {
+    padding: 0;
+    border: none;
+  }
+
+  .sidebar__logo {
+    width: 38px;
+    height: 38px;
+  }
+
+  .sidebar__logo svg {
+    width: 21px;
+  }
+
+  .sidebar__brand-text h2 {
+    font-size: 0.95rem;
+  }
+
+  .sidebar__brand-text span {
+    font-size: 0.52rem;
+  }
+
+  .sidebar__section {
+    margin: 0;
+  }
+
+  .sidebar__section-title {
+    display: none;
+  }
+
+  .sidebar__nav {
+    flex-direction: row;
+    gap: 5px;
+  }
+
+  .sidebar__link {
+    justify-content: center;
+    gap: 7px;
+    padding: 10px;
+    font-size: 0.78rem;
+  }
+
+  .sidebar__link svg {
+    width: 17px;
+    height: 17px;
+  }
+
+  .sidebar__bottom {
+    margin: 0;
+  }
+
+  .sidebar__logout {
+    justify-content: center;
+    width: auto;
+    padding: 10px;
+  }
+
+  .sidebar__logout span {
+    display: none;
+  }
+
+  .sidebar__logout svg {
+    width: 19px;
+  }
+
+  .sidebar__footer {
+    display: none;
+  }
+}
+
+/* Móviles pequeños */
+@media (max-width: 480px) {
+  .sidebar {
+    padding: 11px 12px;
+    gap: 6px;
+  }
+
+  .sidebar__brand {
+    gap: 7px;
+  }
+
+  .sidebar__brand-text h2 {
+    font-size: 0.82rem;
+  }
+
+  .sidebar__brand-text span {
+    font-size: 0.43rem;
+    letter-spacing: 0.3px;
+  }
+
+  .sidebar__logo {
+    width: 34px;
+    height: 34px;
+  }
+
+  .sidebar__nav {
+    gap: 2px;
+  }
+
+  .sidebar__link {
+    padding: 9px 7px;
+    gap: 4px;
+    font-size: 0.7rem;
+  }
+}

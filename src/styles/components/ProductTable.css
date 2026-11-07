@@ -1,0 +1,123 @@
+
+.product-table__container {
+  width: 100%;
+  overflow-x: auto;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+}
+
+.product-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.product-table thead {
+  background: #faf6f1;
+}
+
+.product-table th {
+  padding: 17px 20px;
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.product-table td {
+  padding: 17px 20px;
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text);
+  font-size: 0.85rem;
+}
+
+.product-table__name {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  font-weight: 600;
+}
+
+.product-table__product-icon {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border-radius: 9px;
+  background: #f2e6e7;
+  color: var(--color-primary);
+}
+
+.product-status {
+  display: inline-flex;
+  padding: 6px 10px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.product-status--available {
+  background: #e6f2e9;
+  color: var(--color-success);
+}
+
+.product-status--empty {
+  background: #fbe9e7;
+  color: var(--color-danger);
+}
+
+.product-table__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.product-table__actions button {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  transition: 0.2s ease;
+}
+
+.product-table__actions button:first-child:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.product-table__actions button:last-child:hover {
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+}
+
+.product-table__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 55px 20px;
+  border: 1px dashed var(--color-border);
+  border-radius: 12px;
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.product-table__empty h3 {
+  margin: 14px 0 6px;
+  color: var(--color-text);
+  font-size: 1rem;
+}
+
+.product-table__empty p {
+  margin: 0;
+  font-size: 0.85rem;
+}
