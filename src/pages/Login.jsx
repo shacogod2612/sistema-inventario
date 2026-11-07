@@ -1,30 +1,57 @@
+
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Package } from "lucide-react";
+import { signIn } from "../services/authService";
 import "../styles/Login.css";
 
 function Login() {
-  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
-  const handleSubmit = (event) => {
+  const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // Próximamente conectaremos Supabase Auth.
+
+    setErrorMessage("");
+    setIsLoading(true);
+
+    try {
+      await signIn(email, password);
+
+      navigate("/dashboard", { replace: true });
+    } catch (error) {
+      console.error("Error de autenticación:", error);
+      setErrorMessage("Correo o contraseña incorrectos.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <main className="login-page">
-      <section className="login-card">
+      {/* Fondo de pantalla completa para móviles */}
+      <div className="login-mobile-bg">
+        <img src="/img/nailong.png" alt="Fondo Capulí" />
+        <div className="login-mobile-bg__overlay"></div>
+      </div>
 
-        {/* Panel lateral con la imagen */}
+      <section className="login-card">
+        {/* Sidebar visible solo en Escritorio */}
         <div className="login-sidebar">
-          <img 
-            src="/img/nailong.png" 
-            alt="Capulí Adviento Decoración" 
+          <img
+            src="/img/nailong.png"
+            alt="Capulí Adviento Decoración"
             className="login-sidebar__image"
           />
           <div className="login-sidebar__overlay"></div>
         </div>
 
-        {/* Formulario a la derecha */}
+        {/* Formulario */}
         <div className="login-content">
           <div className="login-brand">
             <div className="login-brand__icon">
@@ -44,7 +71,10 @@ function Login() {
               <input
                 type="email"
                 id="email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
                 placeholder="ejemplo@correo.com"
+                autoComplete="username"
                 required
               />
             </div>
@@ -56,14 +86,19 @@ function Login() {
                 <input
                   type={showPassword ? "text" : "password"}
                   id="password"
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
                   placeholder="Ingresa tu contraseña"
+                  autoComplete="current-password"
                   required
                 />
 
                 <button
                   type="button"
                   className="password-toggle"
-                  onClick={() => setShowPassword(!showPassword)}
+                  onClick={() =>
+                    setShowPassword((current) => !current)
+                  }
                   aria-label={
                     showPassword
                       ? "Ocultar contraseña"
@@ -75,8 +110,18 @@ function Login() {
               </div>
             </div>
 
-            <button type="submit" className="login-button">
-              Iniciar sesión
+            {errorMessage && (
+              <p className="login-error" role="alert">
+                {errorMessage}
+              </p>
+            )}
+
+            <button
+              type="submit"
+              className="login-button"
+              disabled={isLoading}
+            >
+              {isLoading ? "Iniciando sesión..." : "Iniciar sesión"}
             </button>
           </form>
 
@@ -84,7 +129,6 @@ function Login() {
             Sistema privado de gestión de inventario
           </p>
         </div>
-
       </section>
     </main>
   );
