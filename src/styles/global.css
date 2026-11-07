@@ -1,0 +1,23 @@
+
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  font-family: "Plus Jakarta Sans", Arial, sans-serif;
+  color: #30272a;
+  background: #f7f3ed;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+button,
+input {
+  font: inherit;
+}
