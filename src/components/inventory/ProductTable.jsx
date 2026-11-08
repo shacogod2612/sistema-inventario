@@ -8,8 +8,8 @@ function ProductTable({ products, onEdit, onDelete }) {
     return (
       <div className="product-table__empty">
         <Package size={35} />
-        <h3>No hay productos registrados</h3>
-        <p>Cuando agregues productos, aparecerán aquí.</p>
+        <h3>No hay artículos registrados</h3>
+        <p>Cuando agregues artículos, aparecerán aquí.</p>
       </div>
     );
   }
@@ -19,68 +19,72 @@ function ProductTable({ products, onEdit, onDelete }) {
       <table className="product-table">
         <thead>
           <tr>
-            <th>Producto</th>
-            <th>Categoría</th>
-            <th>Precio</th>
-            <th>Stock</th>
+            <th>Artículo</th>
+            <th>Cantidad</th>
             <th>Estado</th>
             <th>Acciones</th>
           </tr>
         </thead>
 
         <tbody>
-          {products.map((product) => (
-            <tr key={product.id}>
-              <td>
-                <div className="product-table__name">
-                  <span className="product-table__product-icon">
-                    <Package size={18} />
+          {products.map((product) => {
+            const isOutOfStock = product.quantity === 0;
+            const isLowStock = product.quantity <= 4;
+
+            let status = "Disponible";
+            let statusClass = "product-status--available";
+
+            if (isOutOfStock) {
+              status = "Agotado";
+              statusClass = "product-status--empty";
+            } else if (isLowStock) {
+              status = "Stock bajo";
+              statusClass = "product-status--low";
+            }
+
+            return (
+              <tr key={product.id}>
+                <td>
+                  <div className="product-table__name">
+                    <span className="product-table__product-icon">
+                      <Package size={18} />
+                    </span>
+                    <span>{product.name}</span>
+                  </div>
+                </td>
+
+                <td>{product.quantity}</td>
+
+                <td>
+                  <span className={`product-status ${statusClass}`}>
+                    {status}
                   </span>
-                  <span>{product.name}</span>
-                </div>
-              </td>
+                </td>
 
-              <td>{product.category}</td>
+                <td>
+                  <div className="product-table__actions">
+                    <button
+                      type="button"
+                      onClick={() => onEdit(product)}
+                      aria-label={`Editar ${product.name}`}
+                      title="Editar artículo"
+                    >
+                      <Pencil size={17} />
+                    </button>
 
-              <td>S/ {Number(product.price).toFixed(2)}</td>
-
-              <td>{product.stock}</td>
-
-              <td>
-                <span
-                  className={`product-status ${
-                    product.stock > 0
-                      ? "product-status--available"
-                      : "product-status--empty"
-                  }`}
-                >
-                  {product.stock > 0 ? "Disponible" : "Agotado"}
-                </span>
-              </td>
-
-              <td>
-                <div className="product-table__actions">
-                  <button
-                    type="button"
-                    onClick={() => onEdit(product)}
-                    aria-label={`Editar ${product.name}`}
-                    title="Editar producto"
-                  >
-                    <Pencil size={17} />
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => onDelete(product.id)}
-                    aria-label={`Eliminar ${product.name}`}
-                    title="Eliminar producto"
-                  >
-                    <Trash2 size={17} />
-                  </button>
-                </div>
-              </td>
-            </tr>
-          ))}
+                    <button
+                      type="button"
+                      onClick={() => onDelete(product.id)}
+                      aria-label={`Eliminar ${product.name}`}
+                      title="Eliminar artículo"
+                    >
+                      <Trash2 size={17} />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>

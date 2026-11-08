@@ -121,3 +121,8 @@
   margin: 0;
   font-size: 0.85rem;
 }
+
+.product-status--low {
+  background: #f8f0d9;
+  color: var(--color-gold-dark);
+}
