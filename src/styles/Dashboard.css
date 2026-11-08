@@ -49,6 +49,23 @@
   font-size: 0.82rem;
 }
 
+.dashboard-message,
+.dashboard-error {
+  padding: 20px;
+  border-radius: 10px;
+  background: var(--color-surface);
+  font-size: 0.85rem;
+}
+
+.dashboard-message {
+  color: var(--color-text-muted);
+}
+
+.dashboard-error {
+  color: var(--color-danger);
+  border: 1px solid #f1c7c3;
+}
+
 @media (max-width: 1200px) {
   .dashboard-stats {
     grid-template-columns: repeat(2, minmax(0, 1fr));
