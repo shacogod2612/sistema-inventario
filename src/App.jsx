@@ -1,4 +1,3 @@
-
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import Login from "./pages/Login";
@@ -24,7 +23,7 @@ function PublicRoute() {
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/sistema-inventario">
       <Routes>
         <Route path="/" element={<PublicRoute />} />
 
