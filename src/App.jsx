@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { useAuth } from "./context/AuthContext";
+import Products from "./pages/Products";
 
 function PublicRoute() {
   const { session, isLoading } = useAuth();
@@ -29,6 +30,7 @@ function App() {
 
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/productos" element={<Products />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />

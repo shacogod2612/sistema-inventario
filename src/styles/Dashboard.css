@@ -180,3 +180,9 @@
   color: inherit;
   font-size: 1.2rem;
 }
+
+@media (max-width: 768px) {
+  .dashboard-main {
+    padding-bottom: 85px;
+  }
+}

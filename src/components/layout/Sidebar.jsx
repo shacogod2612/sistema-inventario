@@ -39,10 +39,15 @@ function Sidebar({ onLogout, isLoggingOut }) {
             <span>Resumen</span>
           </NavLink>
 
-          <a href="#productos" className="sidebar__link">
-            <Package size={20} />
-            <span>Productos</span>
-          </a>
+         <NavLink
+          to="/productos"
+          className={({ isActive }) =>
+            `sidebar__link ${isActive ? "sidebar__link--active" : ""}`
+          }
+        >
+          <Package size={20} />
+          <span>Productos</span>
+        </NavLink>
         </nav>
       </div>
 
