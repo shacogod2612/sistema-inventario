@@ -1,8 +1,8 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Package } from "lucide-react";
 import { signIn } from "../services/authService";
+import nailongImg from "/public/img/nailong.png"; 
 import "../styles/Login.css";
 
 function Login() {
@@ -36,7 +36,7 @@ function Login() {
     <main className="login-page">
       {/* Fondo de pantalla completa para móviles */}
       <div className="login-mobile-bg">
-        <img src="/img/nailong.png" alt="Fondo Capulí" />
+        <img src={nailongImg} alt="Fondo Capulí" />
         <div className="login-mobile-bg__overlay"></div>
       </div>
 
@@ -44,7 +44,7 @@ function Login() {
         {/* Sidebar visible solo en Escritorio */}
         <div className="login-sidebar">
           <img
-            src="/img/nailong.png"
+            src={nailongImg}
             alt="Capulí Adviento Decoración"
             className="login-sidebar__image"
           />
