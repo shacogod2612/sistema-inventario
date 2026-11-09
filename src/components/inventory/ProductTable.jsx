@@ -20,7 +20,7 @@ function ProductTable({ products, onEdit, onDelete }) {
         <thead>
           <tr>
             <th>Artículo</th>
-            <th>Cantidad</th>
+            <th>Stock total</th>
             <th>Estado</th>
             <th>Acciones</th>
           </tr>
@@ -28,8 +28,18 @@ function ProductTable({ products, onEdit, onDelete }) {
 
         <tbody>
           {products.map((product) => {
-            const isOutOfStock = product.quantity === 0;
-            const isLowStock = product.quantity <= 4;
+            // Obtener las variantes del artículo
+            const variants = product.variants ?? [];
+
+            // Calcular el stock total
+            const totalQuantity = variants.reduce(
+              (total, variant) => total + Number(variant.quantity),
+              0
+            );
+
+            // Determinar el estado del artículo
+            const isOutOfStock = totalQuantity === 0;
+            const isLowStock = totalQuantity > 0 && totalQuantity <= 4;
 
             let status = "Disponible";
             let statusClass = "product-status--available";
@@ -44,23 +54,47 @@ function ProductTable({ products, onEdit, onDelete }) {
 
             return (
               <tr key={product.id}>
+                {/* ARTÍCULO Y VARIANTES */}
                 <td>
                   <div className="product-table__name">
                     <span className="product-table__product-icon">
                       <Package size={18} />
                     </span>
-                    <span>{product.name}</span>
+
+                    <div className="product-table__product-info">
+                      <span className="product-table__product-title">
+                        {product.name}
+                      </span>
+
+                      <div className="product-table__variants">
+                        {variants.map((variant) => (
+                          <span
+                            key={variant.id}
+                            className="product-table__variant"
+                          >
+                            {variant.color}: {variant.quantity}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 </td>
 
-                <td>{product.quantity}</td>
+                {/* STOCK TOTAL */}
+                <td>
+                  <strong className="product-table__quantity">
+                    {totalQuantity}
+                  </strong>
+                </td>
 
+                {/* ESTADO */}
                 <td>
                   <span className={`product-status ${statusClass}`}>
                     {status}
                   </span>
                 </td>
 
+                {/* ACCIONES */}
                 <td>
                   <div className="product-table__actions">
                     <button

@@ -1,33 +1,97 @@
 
-import { useState } from "react";
-import { X, PackagePlus } from "lucide-react";
+import { useRef, useState } from "react";
+import { X, PackagePlus, Plus, Trash2 } from "lucide-react";
 
 import "../../styles/components/ProductForm.css";
 
 function ProductForm({ onSubmit, onCancel }) {
   const [name, setName] = useState("");
-  const [quantity, setQuantity] = useState("1");
+  const [variants, setVariants] = useState([
+    { id: 1, color: "Único", quantity: "1" },
+  ]);
   const [isSaving, setIsSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+
+  const nextId = useRef(2);
+
+  // Agregar una nueva variante
+  const handleAddVariant = () => {
+    setVariants((currentVariants) => [
+      ...currentVariants,
+      {
+        id: nextId.current++,
+        color: "",
+        quantity: "0",
+      },
+    ]);
+  };
+
+  // Actualizar un campo de una variante
+  const handleVariantChange = (variantId, field, value) => {
+    setVariants((currentVariants) =>
+      currentVariants.map((variant) =>
+        variant.id === variantId
+          ? { ...variant, [field]: value }
+          : variant
+      )
+    );
+  };
+
+  // Eliminar una variante
+  const handleRemoveVariant = (variantId) => {
+    setVariants((currentVariants) =>
+      currentVariants.filter((variant) => variant.id !== variantId)
+    );
+  };
+
+  // Calcular el stock total
+  const totalQuantity = variants.reduce(
+    (total, variant) => total + (Number(variant.quantity) || 0),
+    0
+  );
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setErrorMessage("");
 
     const trimmedName = name.trim();
-    const parsedQuantity = Number(quantity);
 
     if (!trimmedName) {
       setErrorMessage("Ingresa el nombre del artículo.");
       return;
     }
 
-    if (
-      quantity === "" ||
-      !Number.isInteger(parsedQuantity) ||
-      parsedQuantity < 0
-    ) {
-      setErrorMessage("Ingresa una cantidad entera igual o mayor a 0.");
+    if (variants.length === 0) {
+      setErrorMessage("Agrega al menos una variante.");
+      return;
+    }
+
+    // Validar nombres y cantidades
+    for (const variant of variants) {
+      if (!variant.color.trim()) {
+        setErrorMessage("Todas las variantes deben tener un color o nombre.");
+        return;
+      }
+
+      const quantity = Number(variant.quantity);
+
+      if (
+        variant.quantity === "" ||
+        !Number.isInteger(quantity) ||
+        quantity < 0
+      ) {
+        setErrorMessage("Las cantidades deben ser números enteros iguales o mayores a 0.");
+        return;
+      }
+    }
+
+    // Evitar variantes duplicadas
+    const normalizedColors = variants.map((variant) =>
+      variant.color.trim().toLocaleLowerCase()
+    );
+
+    if (new Set(normalizedColors).size !== normalizedColors.length) {
+      setErrorMessage("No puedes registrar dos variantes con el mismo nombre.");
       return;
     }
 
@@ -36,7 +100,10 @@ function ProductForm({ onSubmit, onCancel }) {
 
       await onSubmit({
         name: trimmedName,
-        quantity: parsedQuantity,
+        variants: variants.map((variant) => ({
+          color: variant.color.trim(),
+          quantity: Number(variant.quantity),
+        })),
       });
     } catch (error) {
       console.error("Error al registrar artículo:", error);
@@ -64,7 +131,7 @@ function ProductForm({ onSubmit, onCancel }) {
 
             <div>
               <h2 id="product-form-title">Nuevo artículo</h2>
-              <p>Registra un artículo en tu inventario.</p>
+              <p>Registra un artículo y sus variantes.</p>
             </div>
           </div>
 
@@ -90,31 +157,99 @@ function ProductForm({ onSubmit, onCancel }) {
               id="product-name"
               value={name}
               onChange={(event) => setName(event.target.value)}
-              placeholder="Ej. Tocador"
+              placeholder="Ej. Medias"
               maxLength={100}
               autoFocus
               required
             />
           </div>
 
-          <div className="product-form__field">
-            <label htmlFor="product-quantity">
-              Cantidad disponible
-            </label>
+          <div className="product-form__variants">
+            <div className="product-form__variants-header">
+              <div>
+                <h3>Variantes y stock</h3>
+                <p>Agrega los colores o presentaciones disponibles.</p>
+              </div>
 
-            <input
-              type="number"
-              id="product-quantity"
-              min="0"
-              step="1"
-              value={quantity}
-              onChange={(event) => setQuantity(event.target.value)}
-              required
-            />
+              <button
+                type="button"
+                className="product-form__add-variant"
+                onClick={handleAddVariant}
+                disabled={isSaving}
+              >
+                <Plus size={16} />
+                Agregar
+              </button>
+            </div>
 
-            <small>
-              Puedes ingresar 0 si el artículo está agotado.
-            </small>
+            {variants.map((variant, index) => (
+              <div
+                className="product-form__variant-row"
+                key={variant.id}
+              >
+                <div className="product-form__variant-field">
+                  <label htmlFor={`variant-color-${variant.id}`}>
+                    {index === 0 ? "Color o variante" : `Variante ${index + 1}`}
+                  </label>
+
+                  <input
+                    type="text"
+                    id={`variant-color-${variant.id}`}
+                    value={variant.color}
+                    onChange={(event) =>
+                      handleVariantChange(
+                        variant.id,
+                        "color",
+                        event.target.value
+                      )
+                    }
+                    placeholder="Ej. Negro"
+                    maxLength={50}
+                    required
+                    disabled={isSaving}
+                  />
+                </div>
+
+                <div className="product-form__variant-field">
+                  <label htmlFor={`variant-quantity-${variant.id}`}>
+                    Cantidad
+                  </label>
+
+                  <input
+                    type="number"
+                    id={`variant-quantity-${variant.id}`}
+                    min="0"
+                    step="1"
+                    value={variant.quantity}
+                    onChange={(event) =>
+                      handleVariantChange(
+                        variant.id,
+                        "quantity",
+                        event.target.value
+                      )
+                    }
+                    required
+                    disabled={isSaving}
+                  />
+                </div>
+
+                <button
+                  type="button"
+                  className="product-form__remove-variant"
+                  onClick={() => handleRemoveVariant(variant.id)}
+                  disabled={isSaving || variants.length === 1}
+                  aria-label={`Eliminar variante ${index + 1}`}
+                  title="Eliminar variante"
+                >
+                  <Trash2 size={17} />
+                </button>
+              </div>
+            ))}
+          </div>
+
+          <div className="product-form__total">
+            <span>Stock total del artículo</span>
+            <strong>{totalQuantity} unidades</strong>
           </div>
 
           {errorMessage && (

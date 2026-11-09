@@ -4,16 +4,13 @@ import { useNavigate } from "react-router-dom";
 
 import {
   Package,
-  Boxes,
   AlertTriangle,
 } from "lucide-react";
 
 import { useAuth } from "../context/AuthContext";
 import { signOut } from "../services/authService";
 
-import {
-  getProducts,
-} from "../services/productService";
+import { getProducts } from "../services/productService";
 
 import {
   getCalendar,
@@ -49,12 +46,10 @@ function Dashboard() {
       await signOut();
 
       navigate("/", { replace: true });
-
     } catch (error) {
       console.error("Error al cerrar sesión:", error);
 
       alert("No se pudo cerrar la sesión. Inténtalo nuevamente.");
-
     } finally {
       setIsLoggingOut(false);
     }
@@ -132,23 +127,38 @@ function Dashboard() {
   }, []);
 
   // =====================================
+  // CALCULAR STOCK POR ARTÍCULO
+  // =====================================
+
+  const productsWithStock = products.map((product) => {
+    const totalQuantity = (product.variants ?? []).reduce(
+      (total, variant) => total + Number(variant.quantity),
+      0
+    );
+
+    return {
+      ...product,
+      totalQuantity,
+    };
+  });
+
+  // =====================================
   // ESTADÍSTICAS DE ARTÍCULOS
   // =====================================
 
-  const totalProducts = products.length;
+  // Cantidad de artículos registrados
+  const totalProducts = productsWithStock.length;
 
-  const totalUnits = products.reduce(
-    (total, product) => total + product.quantity,
-    0
-  );
-
-  const lowStockProducts = products.filter(
+  // Artículos con stock total entre 1 y 4 unidades
+  const lowStockProducts = productsWithStock.filter(
     (product) =>
-      product.quantity > 0 && product.quantity <= 4
+      product.totalQuantity > 0 &&
+      product.totalQuantity <= 4
   ).length;
 
-  const outOfStockProducts = products.filter(
-    (product) => product.quantity === 0
+  // Artículos cuyo stock total es igual a cero
+  const outOfStockProducts = productsWithStock.filter(
+    (product) => product.totalQuantity === 0
   ).length;
 
   // =====================================
@@ -161,9 +171,9 @@ function Dashboard() {
 
       setCalendar(updatedCalendar);
       setIsCalendarFormOpen(false);
-
     } catch (error) {
       console.error("Error al actualizar Calendario:", error);
+
       alert("No se pudo actualizar la información del Calendario.");
     }
   };
@@ -174,14 +184,12 @@ function Dashboard() {
 
   return (
     <div className="dashboard-layout">
-
       <Sidebar
         onLogout={handleLogout}
         isLoggingOut={isLoggingOut}
       />
 
       <main className="dashboard-main">
-
         <Header
           title="Resumen general"
           description="Bienvenida a tu panel de gestión de inventario."
@@ -193,7 +201,6 @@ function Dashboard() {
           {/* PRODUCTO PRINCIPAL */}
 
           <section className="dashboard-calendar">
-
             {calendarError ? (
               <p className="dashboard-error" role="alert">
                 {calendarError}
@@ -205,13 +212,11 @@ function Dashboard() {
                 onEdit={() => setIsCalendarFormOpen(true)}
               />
             )}
-
           </section>
 
           {/* ESTADÍSTICAS GENERALES */}
 
           <section className="dashboard-stats">
-
             {productsError ? (
               <p className="dashboard-error" role="alert">
                 {productsError}
@@ -227,10 +232,14 @@ function Dashboard() {
                 />
 
                 <StatCard
-                  title="Unidades disponibles"
-                  value={isProductsLoading ? "..." : totalUnits}
-                  description="Unidades en inventario"
-                  icon={Boxes}
+                  title="Calendarios disponibles"
+                  value={
+                    isCalendarLoading
+                      ? "..."
+                      : calendar?.quantity ?? 0
+                  }
+                  description="Calendarios terminados listos para vender"
+                  icon={Package}
                   variant="success"
                 />
 
@@ -251,11 +260,9 @@ function Dashboard() {
                 />
               </>
             )}
-
           </section>
 
         </div>
-
       </main>
 
       {/* FORMULARIO DE EDICIÓN DEL CALENDARIO */}
@@ -271,7 +278,6 @@ function Dashboard() {
       {/* NAVEGACIÓN MÓVIL */}
 
       <MobileNavigation />
-
     </div>
   );
 }

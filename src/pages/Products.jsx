@@ -1,11 +1,11 @@
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 import { Plus } from "lucide-react";
 
 import { useAuth } from "../context/AuthContext";
 import { signOut } from "../services/authService";
+
 import {
   getProducts,
   createProduct,
@@ -69,16 +69,31 @@ function Products() {
     loadProducts();
   }, []);
 
+  // Recargar inventario con sus variantes
+  const refreshProducts = async () => {
+    try {
+      const updatedProducts = await getProducts();
+
+      setProducts(updatedProducts);
+      setErrorMessage("");
+    } catch (error) {
+      console.error("Error al actualizar inventario:", error);
+
+      setErrorMessage(
+        "La operación se realizó, pero no se pudo actualizar el inventario. Recarga la página."
+      );
+    }
+  };
+
   // Registrar artículo
   const handleCreateProduct = async (productData) => {
-    const newProduct = await createProduct(productData);
+    await createProduct(productData);
 
-    setProducts((currentProducts) => [
-      newProduct,
-      ...currentProducts,
-    ]);
-
+    // Cerramos el formulario porque el registro ya se realizó
     setIsFormOpen(false);
+
+    // Actualizamos la información de la tabla
+    await refreshProducts();
   };
 
   // Abrir edición
@@ -88,20 +103,13 @@ function Products() {
 
   // Actualizar artículo
   const handleUpdateProduct = async (productData) => {
-    const updatedProduct = await updateProduct(
-      productData.id,
-      productData
-    );
+    await updateProduct(productData.id, productData);
 
-    setProducts((currentProducts) =>
-      currentProducts.map((product) =>
-        product.id === updatedProduct.id
-          ? updatedProduct
-          : product
-      )
-    );
-
+    // Cerramos el formulario de edición
     setSelectedProduct(null);
+
+    // Actualizamos el inventario completo
+    await refreshProducts();
   };
 
   // Abrir confirmación de eliminación
@@ -161,14 +169,12 @@ function Products() {
 
   return (
     <div className="dashboard-layout">
-
       <Sidebar
         onLogout={handleLogout}
         isLoggingOut={isLoggingOut}
       />
 
       <main className="dashboard-main">
-
         <Header
           title="Productos"
           description="Administra los artículos de tus cajas de adviento."
@@ -176,9 +182,7 @@ function Products() {
         />
 
         <div className="dashboard-content">
-
           <section className="dashboard-products">
-
             {/* ENCABEZADO */}
             <div className="dashboard-section-heading">
               <div>
@@ -215,11 +219,8 @@ function Products() {
                 onDelete={handleDelete}
               />
             )}
-
           </section>
-
         </div>
-
       </main>
 
       {/* REGISTRAR ARTÍCULO */}
@@ -269,7 +270,7 @@ function Products() {
         </div>
       )}
 
-        <MobileNavigation />
+      <MobileNavigation />
     </div>
   );
 }
