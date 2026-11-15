@@ -1,4 +1,4 @@
-
+import { useEffect } from "react";
 import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import Login from "./pages/Login";
@@ -22,6 +22,17 @@ function PublicRoute() {
 }
 
 function App() {
+  // Si el navegador entra directo a una subruta sin '#', la redirige al formato HashRouter
+  useEffect(() => {
+    const repoBase = "/sistema-inventario"; 
+    const path = window.location.pathname;
+
+    if (path !== "/" && path !== `${repoBase}/` && path !== repoBase && !window.location.hash) {
+      const subPath = path.replace(repoBase, "");
+      window.history.replaceState(null, "", `${repoBase}/#${subPath}`);
+    }
+  }, []);
+
   return (
     <HashRouter>
       <Routes>
