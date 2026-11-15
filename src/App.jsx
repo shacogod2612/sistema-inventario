@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+
+import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -13,7 +14,6 @@ function PublicRoute() {
     return <p>Verificando acceso...</p>;
   }
 
-  // Si ya inició sesión, no necesita volver al login
   if (session) {
     return <Navigate to="/dashboard" replace />;
   }
@@ -23,7 +23,7 @@ function PublicRoute() {
 
 function App() {
   return (
-    <BrowserRouter basename="/sistema-inventario">
+    <HashRouter>
       <Routes>
         <Route path="/" element={<PublicRoute />} />
 
@@ -34,7 +34,7 @@ function App() {
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
