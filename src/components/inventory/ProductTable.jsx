@@ -15,112 +15,109 @@ function ProductTable({ products, onEdit, onDelete }) {
   }
 
   return (
-    <div className="product-table__container">
-      <table className="product-table">
-        <thead>
-          <tr>
-            <th>Artículo</th>
-            <th>Stock total</th>
-            <th>Estado</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
+    <div className="product-cards">
+      {products.map((product) => {
+        const variants = product.variants ?? [];
 
-        <tbody>
-          {products.map((product) => {
-            // Obtener las variantes del artículo
-            const variants = product.variants ?? [];
+        const totalQuantity = variants.reduce(
+          (total, variant) => total + Number(variant.quantity),
+          0
+        );
 
-            // Calcular el stock total
-            const totalQuantity = variants.reduce(
-              (total, variant) => total + Number(variant.quantity),
-              0
-            );
+        const isOutOfStock = totalQuantity === 0;
+        const isLowStock = totalQuantity > 0 && totalQuantity <= 4;
 
-            // Determinar el estado del artículo
-            const isOutOfStock = totalQuantity === 0;
-            const isLowStock = totalQuantity > 0 && totalQuantity <= 4;
+        let status = "Disponible";
+        let statusClass = "product-status--available";
 
-            let status = "Disponible";
-            let statusClass = "product-status--available";
+        if (isOutOfStock) {
+          status = "Agotado";
+          statusClass = "product-status--empty";
+        } else if (isLowStock) {
+          status = "Stock bajo";
+          statusClass = "product-status--low";
+        }
 
-            if (isOutOfStock) {
-              status = "Agotado";
-              statusClass = "product-status--empty";
-            } else if (isLowStock) {
-              status = "Stock bajo";
-              statusClass = "product-status--low";
-            }
+        return (
+          <article className="product-card" key={product.id}>
+            {/* ENCABEZADO */}
+            <div className="product-card__header">
+              <div className="product-card__identity">
+                <span className="product-card__icon">
+                  <Package size={20} />
+                </span>
 
-            return (
-              <tr key={product.id}>
-                {/* ARTÍCULO Y VARIANTES */}
-                <td>
-                  <div className="product-table__name">
-                    <span className="product-table__product-icon">
-                      <Package size={18} />
+                <h3 className="product-card__name">
+                  {product.name}
+                </h3>
+              </div>
+
+              <span className={`product-status ${statusClass}`}>
+                {status}
+              </span>
+            </div>
+
+            {/* VARIANTES */}
+            <div className="product-card__variants-section">
+              <span className="product-card__label">
+                Variantes registradas
+              </span>
+
+              {variants.length > 0 ? (
+                <div className="product-card__variants">
+                  {variants.map((variant) => (
+                    <span
+                      key={variant.id}
+                      className="product-card__variant"
+                    >
+                      <span>{variant.color}</span>
+                      <strong>{variant.quantity}</strong>
                     </span>
+                  ))}
+                </div>
+              ) : (
+                <p className="product-card__no-variants">
+                  Sin variantes registradas
+                </p>
+              )}
+            </div>
 
-                    <div className="product-table__product-info">
-                      <span className="product-table__product-title">
-                        {product.name}
-                      </span>
+            {/* PIE DE TARJETA */}
+            <div className="product-card__footer">
+              <div className="product-card__stock">
+                <span className="product-card__label">
+                  Stock total
+                </span>
 
-                      <div className="product-table__variants">
-                        {variants.map((variant) => (
-                          <span
-                            key={variant.id}
-                            className="product-table__variant"
-                          >
-                            {variant.color}: {variant.quantity}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </td>
+                <strong className="product-card__quantity">
+                  {totalQuantity}
+                  <span> unidades</span>
+                </strong>
+              </div>
 
-                {/* STOCK TOTAL */}
-                <td>
-                  <strong className="product-table__quantity">
-                    {totalQuantity}
-                  </strong>
-                </td>
+              <div className="product-card__actions">
+                <button
+                  type="button"
+                  onClick={() => onEdit(product)}
+                  aria-label={`Editar ${product.name}`}
+                  title="Editar artículo"
+                >
+                  <Pencil size={17} />
+                </button>
 
-                {/* ESTADO */}
-                <td>
-                  <span className={`product-status ${statusClass}`}>
-                    {status}
-                  </span>
-                </td>
-
-                {/* ACCIONES */}
-                <td>
-                  <div className="product-table__actions">
-                    <button
-                      type="button"
-                      onClick={() => onEdit(product)}
-                      aria-label={`Editar ${product.name}`}
-                      title="Editar artículo"
-                    >
-                      <Pencil size={17} />
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => onDelete(product.id)}
-                      aria-label={`Eliminar ${product.name}`}
-                      title="Eliminar artículo"
-                    >
-                      <Trash2 size={17} />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+                <button
+                  type="button"
+                  onClick={() => onDelete(product.id)}
+                  aria-label={`Eliminar ${product.name}`}
+                  title="Eliminar artículo"
+                >
+                  <Trash2 size={17} />
+                </button>
+              </div>
+            </div>
+          </article>
+        );
+      })}
     </div>
   );
 }
